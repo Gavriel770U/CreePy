@@ -11,7 +11,7 @@ class CreePy:
         self._phase: int = 1
         self._phase_duration: int = 10 # seconds
         self._phase_switch_sleep: int = 5 # seconds
-        self._volume_level: float = -65.0
+        self._volume_level: float = 0.0
     
     @property
     def __MAX_PHASE(self) -> int:
@@ -55,12 +55,12 @@ class CreePy:
     def __stop_music(self) -> None:
         pygame.mixer.music.stop()    
         
-    def _volume(self) -> None:
+    def __update_volume(self) -> None:
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
         
         volume.SetMute(self.__UNMUTE, None)
         
-        # the range of the master volume level is -65.0 (0) to 0.0 (100)
-        volume.SetMasterVolumeLevel(self._volume_level, None)
+        # the range of the master volume level is 0.0 (0) to 1.0 (100)
+        volume.SetMasterVolumeLevelScalar(self._volume_level, None)
