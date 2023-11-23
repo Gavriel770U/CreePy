@@ -3,6 +3,7 @@ import pyautogui
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume 
+from PIL import Image
 import time
 
 class CreePy:
@@ -15,17 +16,17 @@ class CreePy:
         
         self._phase: int = 1
         self._phase_duration: int = 30 # seconds
-        self._phase_switch_sleep: int = 5 # seconds
+        self._phase_switch_sleep: int = 2 # seconds
         self._volume_level: float = self._volume.GetMasterVolumeLevelScalar()
         self._volume_switch_sleep: int = 5 # seconds
     
     @property
     def __MAX_PHASE(self) -> int:
-        return 2
+        return 3
     
     @property
     def __PHASES(self) -> dict:
-        return {1 : self._phase_one, 2 : self._phase_two}
+        return {1 : self._phase_one, 2 : self._phase_two, 3 : self._phase_three}
     
     @property
     def __MUTE(self) -> int:
@@ -56,6 +57,13 @@ class CreePy:
             time.sleep(self._volume_switch_sleep)
             self.__update_volume()
         self.__stop_music()
+    
+    def _phase_three(self) -> None:
+        end_time = time.time() + self._phase_duration
+        image = Image.open(r'./resources/phase_three/pi.png')
+        image.show()
+        while time.time() < end_time:
+            pass
     
     def next_phase(self) -> None:
         if self._phase < self.__MAX_PHASE:
