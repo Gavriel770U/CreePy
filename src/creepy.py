@@ -9,9 +9,10 @@ class CreePy:
     def __init__(self) -> None:
         pygame.init()
         self._phase: int = 1
-        self._phase_duration: int = 10 # seconds
+        self._phase_duration: int = 30 # seconds
         self._phase_switch_sleep: int = 5 # seconds
         self._volume_level: float = 0.0
+        self._volume_switch_sleep: int = 5 # seconds
     
     @property
     def __MAX_PHASE(self) -> int:
@@ -29,6 +30,14 @@ class CreePy:
     def __UNMUTE(self) -> int:
         return 0
     
+    @property
+    def __MAX_VOLUME_LEVEL(self) -> float:
+        return 1.0
+    
+    @property 
+    def __MIN_VOLUME_LEVEL(self) -> float:
+        return 0.0
+    
     def _phase_one(self) -> None:
         end_time = time.time() + self._phase_duration
         while time.time() < end_time:
@@ -38,7 +47,9 @@ class CreePy:
         end_time = time.time() + self._phase_duration
         self.__play_music(r'./resources/phase_two/mi.mp3')
         while time.time() < end_time:
-            pass
+            self.__increase_volume(0.01)
+            time.sleep(self._volume_switch_sleep)
+            self.__update_volume()
         self.__stop_music()
     
     def next_phase(self) -> None:
@@ -64,3 +75,11 @@ class CreePy:
         
         # the range of the master volume level is 0.0 (0) to 1.0 (100)
         volume.SetMasterVolumeLevelScalar(self._volume_level, None)
+    
+    def __increase_volume(self, inc_value: float) -> None:
+        if self._volume_level + inc_value <= self.__MAX_VOLUME_LEVEL:
+            self._volume_level += inc_value
+            
+    def __decrease_volume(self, dec_value: float) -> None:
+        if self._volume_level - dec_value >= self.__MIN_VOLUME_LEVEL:
+            self._volume_level -= dec_value
