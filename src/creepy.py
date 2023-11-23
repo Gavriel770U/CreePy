@@ -8,10 +8,15 @@ import time
 class CreePy:
     def __init__(self) -> None:
         pygame.init()
+        
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        self._volume = cast(interface, POINTER(IAudioEndpointVolume))
+        
         self._phase: int = 1
         self._phase_duration: int = 30 # seconds
         self._phase_switch_sleep: int = 5 # seconds
-        self._volume_level: float = 0.0
+        self._volume_level: float = self._volume.GetMasterVolumeLevelScalar()
         self._volume_switch_sleep: int = 5 # seconds
     
     @property
@@ -66,15 +71,11 @@ class CreePy:
     def __stop_music(self) -> None:
         pygame.mixer.music.stop()    
         
-    def __update_volume(self) -> None:
-        devices = AudioUtilities.GetSpeakers()
-        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-        volume = cast(interface, POINTER(IAudioEndpointVolume))
-        
-        volume.SetMute(self.__UNMUTE, None)
+    def __update_volume(self) -> None:        
+        self._volume.SetMute(self.__UNMUTE, None)
         
         # the range of the master volume level is 0.0 (0) to 1.0 (100)
-        volume.SetMasterVolumeLevelScalar(self._volume_level, None)
+        self._volume.SetMasterVolumeLevelScalar(self._volume_level, None)
     
     def __increase_volume(self, inc_value: float) -> None:
         if self._volume_level + inc_value <= self.__MAX_VOLUME_LEVEL:
