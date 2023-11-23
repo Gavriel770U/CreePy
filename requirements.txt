@@ -1,0 +1,4 @@
+pygame
+pyautogui
+comtypes
+pycaw
