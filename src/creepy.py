@@ -11,6 +11,7 @@ class CreePy:
         self._phase: int = 1
         self._phase_duration: int = 10 # seconds
         self._phase_switch_sleep: int = 5 # seconds
+        self._volume_level: float = -65.0
     
     @property
     def __MAX_PHASE(self) -> int:
@@ -41,7 +42,7 @@ class CreePy:
         self.__stop_music()
     
     def next_phase(self) -> None:
-        if self._phase < MAX_PHASE:
+        if self._phase < self.__MAX_PHASE:
             self._phase += 1
         time.sleep(self._phase_switch_sleep)
         self.__PHASES[self._phase]()
@@ -62,4 +63,4 @@ class CreePy:
         volume.SetMute(self.__UNMUTE, None)
         
         # the range of the master volume level is -65.0 (0) to 0.0 (100)
-        volume.SetMasterVolumeLevel(-65.0, None)
+        volume.SetMasterVolumeLevel(self._volume_level, None)
