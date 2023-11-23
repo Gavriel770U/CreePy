@@ -2,3 +2,5 @@ pygame
 pyautogui
 comtypes
 pycaw
+Pillow
+tkinter
