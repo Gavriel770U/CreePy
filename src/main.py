@@ -1,5 +1,8 @@
+from creepy import *
+
 def main() -> None:
-    pass
+    creepy = CreePy()
+    creepy._phase_one()
 
 if __name__ == '__main__':
     main()
