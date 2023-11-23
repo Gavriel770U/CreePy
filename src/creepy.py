@@ -3,7 +3,9 @@ import pyautogui
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume 
-from PIL import Image
+from PIL import Image, ImageTk
+import tkinter as tk
+import threading
 import time
 
 class CreePy:
@@ -60,8 +62,10 @@ class CreePy:
     
     def _phase_three(self) -> None:
         end_time = time.time() + self._phase_duration
-        image = Image.open(r'./resources/phase_three/pi.png')
-        image.show()
+           
+        process = threading.Thread(target=self.__stuck_image, args=(r'./resources/phase_three/pi.png',))
+        process.start()
+        
         while time.time() < end_time:
             pass
     
@@ -92,3 +96,20 @@ class CreePy:
     def __decrease_volume(self, dec_value: float) -> None:
         if self._volume_level - dec_value >= self.__MIN_VOLUME_LEVEL:
             self._volume_level -= dec_value
+            
+    def __stuck_image(self, image_path: str) -> None:
+        image = Image.open(image_path)
+        root = tk.Tk()
+        root.attributes("-topmost", True) 
+        root.attributes('-fullscreen', True)
+        
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        image = image.resize((screen_width, screen_height))
+        
+        tk_image = ImageTk.PhotoImage(image)
+        
+        label = tk.Label(root, image=tk_image)
+        label.pack(fill=tk.BOTH, expand=tk.YES)
+        
+        root.mainloop()        
