@@ -16,7 +16,7 @@ class CreePy:
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         self._volume = cast(interface, POINTER(IAudioEndpointVolume))
         
-        self._phase: int = 1
+        self._phase: int = 0
         self._phase_duration: int = 30 # seconds
         self._phase_switch_sleep: int = 2 # seconds
         self._volume_level: float = self._volume.GetMasterVolumeLevelScalar()
@@ -45,6 +45,10 @@ class CreePy:
     @property 
     def __MIN_VOLUME_LEVEL(self) -> float:
         return 0.0
+    
+    def run(self) -> None:
+        for _ in range(self.__MAX_PHASE):
+            self.next_phase()
     
     def _phase_one(self) -> None:
         end_time = time.time() + self._phase_duration
