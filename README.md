@@ -12,10 +12,16 @@ ________________________________________________________________________________
 ### To close the windows use `Alt`+`Tab`.
 ____________________________________________________________________________________
 # Repository Clone
-`git clone https://github.com/Gavriel770U/CreePy.git`
+```
+git clone https://github.com/Gavriel770U/CreePy.git
+```
 
 # Installation Of Requirements
 ## Windows
+```
 pip install -r requirements.txt
+```
 ## Linux & MacOs
+```
 pip3 install -r requirements.txt
+```
