@@ -10,7 +10,7 @@ class CreePy:
         self._phase: int = 1
         self._phase_duration: int = 10 # seconds
         self._phase_switch_sleep: int = 5 # seconds
-        self.__PHASES: dict = {1 : self._phase_one, 2 : self._phase_one}
+        self.__PHASES: dict = {1 : self._phase_one, 2 : self._phase_two}
     
     def _phase_one(self) -> None:
         end_time = time.time() + self._phase_duration
@@ -19,8 +19,10 @@ class CreePy:
     
     def _phase_two(self) -> None:
         end_time = time.time() + self._phase_duration
+        self.__play_music(r'./resources/phase_two/mi.mp3')
         while time.time() < end_time:
             pass
+        self.__stop_music()
     
     def next_phase(self) -> None:
         if self._phase < MAX_PHASE:
