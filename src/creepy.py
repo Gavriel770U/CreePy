@@ -1,8 +1,9 @@
 import pygame
 import pyautogui
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume 
 import time
-
-MAX_PHASE: int = 2
 
 class CreePy:
     def __init__(self) -> None:
@@ -10,7 +11,22 @@ class CreePy:
         self._phase: int = 1
         self._phase_duration: int = 10 # seconds
         self._phase_switch_sleep: int = 5 # seconds
-        self.__PHASES: dict = {1 : self._phase_one, 2 : self._phase_two}
+    
+    @property
+    def __MAX_PHASE(self) -> int:
+        return 2
+    
+    @property
+    def __PHASES(self) -> dict:
+        return {1 : self._phase_one, 2 : self._phase_two}
+    
+    @property
+    def __MUTE(self) -> int:
+        return 1
+    
+    @property
+    def __UNMUTE(self) -> int:
+        return 0
     
     def _phase_one(self) -> None:
         end_time = time.time() + self._phase_duration
@@ -37,3 +53,13 @@ class CreePy:
     
     def __stop_music(self) -> None:
         pygame.mixer.music.stop()    
+        
+    def _volume(self) -> None:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        
+        volume.SetMute(self.__UNMUTE, None)
+        
+        # the range of the master volume level is -65.0 (0) to 0.0 (100)
+        volume.SetMasterVolumeLevel(-65.0, None)
